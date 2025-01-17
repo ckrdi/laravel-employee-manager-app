@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Position;
+use App\Models\Unit;
 use App\Models\User;
 use App\Models\UserPosition;
 use Illuminate\Support\Facades\DB;
@@ -85,6 +87,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->is_new_unit) {
+            $request->validate([
+                'unit_name' => ['required', 'unique:units,name'],
+            ]);
+        }
+
+        if ($request->is_new_position) {
+            $request->validate([
+                'position_name' => ['required', 'unique:positions,name'],
+            ]);
+        }
+
         $request->validate([
             'name' => ['required', 'string'],
             'username' => ['required', 'alpha_dash', 'unique:users'],
@@ -102,7 +116,34 @@ class UserController extends Controller
             'join_date' => $request->join_date ?? null,
         ]);
 
-        if (count($request->position_ids) > 0) {
+        $unit = null;
+        if ($request->is_new_unit) {
+            $unit = Unit::create([
+                'name' => $request->unit_name,
+            ]);
+        }
+
+        if ($unit != null) {
+            $user->update([
+                'unit_id' => $unit->id,
+            ]);
+        }
+
+        $position = null;
+        if ($request->is_new_position) {
+            $position = Position::create([
+                'name' => $request->position_name,
+            ]);
+        }
+
+        if ($position != null) {
+            UserPosition::create([
+                'user_id' => $user->id,
+                'position_id' => $position->id,
+            ]);
+        }
+
+        if (count($request->position_ids) > 0 && $position == null) {
             foreach ($request->position_ids as $position_id) {
                 UserPosition::create([
                     'user_id' => $user->id,

@@ -35,7 +35,7 @@ class UnitController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => ['required'],
+            'name' => ['required', 'unique:units,name'],
         ]);
 
         Unit::create([
@@ -69,7 +69,7 @@ class UnitController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-            'name' => ['required'],
+            'name' => ['required', 'unique:units,name'],
         ]);
 
         $unit = Unit::where('id', $id)->first();

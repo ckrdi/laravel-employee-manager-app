@@ -12,12 +12,18 @@ import { useState } from 'react';
 export default function UserAdd({ unit_options, position_options }) {
     const [unit, setUnit] = useState(null);
     const [positions, setPositions] = useState(null);
+    const [isNewUnit, setIsNewUnit] = useState(false);
+    const [isNewPosition, setIsNewPosition] = useState(false);
     const { data, setData, post, errors, processing, recentlySuccessful, reset } =
         useForm({
             name: '',
             username: '',
             password: '',
             unit_id: null,
+            is_new_unit: false,
+            unit_name: '',
+            is_new_position: false,
+            position_name: '',
             position_ids: [],
             join_date: null,
         });
@@ -89,7 +95,7 @@ export default function UserAdd({ unit_options, position_options }) {
                                     <InputError message={errors.password} className="mt-2" />
                                 </div>
 
-                                <div className="mt-4">
+                                {!isNewUnit && <div className="mt-4">
                                     <InputLabel htmlFor="unit" value="Unit" />
 
                                     <input type="hidden" name="unit_id" id="unit_id" value={data.unit_id || ""} />
@@ -107,9 +113,44 @@ export default function UserAdd({ unit_options, position_options }) {
                                     />
 
                                     <InputError message={errors.unit_id} className="mt-2" />
-                                </div>
+                                    <PrimaryButton
+                                        className="mt-2"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setData('is_new_unit', true);
+                                            setIsNewUnit(true);
+                                        }}
+                                    >
+                                        Buat Unit baru
+                                    </PrimaryButton>
+                                </div>}
 
-                                <div className="mt-4">
+                                {isNewUnit && <div className="mt-4">
+                                    <InputLabel htmlFor="unit_name" value="Unit Name" />
+
+                                    <TextInput
+                                        id="unit_name"
+                                        name="unit_name"
+                                        value={data.unit_name}
+                                        className="mt-1 block w-full"
+                                        required
+                                        onChange={(e) => setData('unit_name', e.target.value)}
+                                    />
+
+                                    <InputError message={errors.unit_name} className="mt-2" />
+                                    <PrimaryButton
+                                        className="mt-2"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setData('is_new_unit', false);
+                                            setIsNewUnit(false);
+                                        }}
+                                    >
+                                        Gunakan unit yang ada
+                                    </PrimaryButton>
+                                </div>}
+
+                                {!isNewPosition && <div className="mt-4">
                                     <InputLabel htmlFor="position" value="Jabatan" />
 
                                     <input type="hidden" name="position_ids" id="position_ids" value={data.position_ids || ""} />
@@ -135,7 +176,42 @@ export default function UserAdd({ unit_options, position_options }) {
                                     />
 
                                     <InputError message={errors.position_ids} className="mt-2" />
-                                </div>
+                                    <PrimaryButton
+                                        className="mt-2"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setData('is_new_position', true);
+                                            setIsNewPosition(true);
+                                        }}
+                                    >
+                                        Buat jabatan baru
+                                    </PrimaryButton>
+                                </div>}
+
+                                {isNewPosition && <div className="mt-4">
+                                    <InputLabel htmlFor="position_name" value="Nama Jabatan" />
+
+                                    <TextInput
+                                        id="position_name"
+                                        name="position_name"
+                                        value={data.position_name}
+                                        className="mt-1 block w-full"
+                                        required
+                                        onChange={(e) => setData('position_name', e.target.value)}
+                                    />
+
+                                    <InputError message={errors.position_name} className="mt-2" />
+                                    <PrimaryButton
+                                        className="mt-2"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setData('is_new_position', false);
+                                            setIsNewPosition(false);
+                                        }}
+                                    >
+                                        Gunakan jabatan yang ada
+                                    </PrimaryButton>
+                                </div>}
 
                                 <div className="mt-4">
                                     <InputLabel htmlFor="join_date" value="Tanggal Join" />
