@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/get_top_logins', [DashboardController::class, 'get_top_logins'])->name('get_top_logins');
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
@@ -21,4 +22,4 @@ Route::middleware('auth')->group(function () {
     Route::resource('/positions', PositionController::class)->except(['index', 'show']);
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
